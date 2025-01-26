@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using OneStore.Data;
+using OneStore.Interfaces;
+using OneStore.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +14,7 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("database"));
 });
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 var app = builder.Build();
 
