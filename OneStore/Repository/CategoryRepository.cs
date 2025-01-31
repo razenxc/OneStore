@@ -2,7 +2,6 @@
 using OneStore.Data;
 using OneStore.DTOs.Category;
 using OneStore.Interfaces;
-using OneStore.Mappers;
 using OneStore.Models;
 
 namespace OneStore.Repository
@@ -10,28 +9,31 @@ namespace OneStore.Repository
     public class CategoryRepository : ICategoryRepository
     {
         private readonly ApplicationDBContext _dbContext;
-        public CategoryRepository(ApplicationDBContext dBContext)
+
+        public CategoryRepository(ApplicationDBContext dbContext)
         {
-            _dbContext = dBContext;
+            _dbContext = dbContext;
         }
 
         public async Task<List<Category>> GetAllAsync()
         {
-            return _dbContext.Categories.ToList();
+            return await _dbContext.Categories
+                .Include(c => c.SubCategories)
+                .ToListAsync();
         }
 
         public async Task<Category?> GetByIdAsync(int id)
         {
-            Category category = await _dbContext.Categories.FirstOrDefaultAsync(x => x.Id == id);
-            if (category == null)
-            {
-                return null;
-            }
-            return category;
+            return await _dbContext.Categories
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<Category?> CreateAsync(Category category)
         {
+            if(category.ParentCategoryId != 0)
+            {
+                category.ParentCategory = await _dbContext.Categories.FirstOrDefaultAsync(x => x.ParentCategoryId == x.Id);
+            }
             await _dbContext.Categories.AddAsync(category);
             await _dbContext.SaveChangesAsync();
             return category;
@@ -39,7 +41,9 @@ namespace OneStore.Repository
 
         public async Task<Category?> UpdateAsync(int id, CategoryUpdateDTO categoryUpdateDTO)
         {
-            Category category = await _dbContext.Categories.FirstOrDefaultAsync(x => x.Id == id);
+            var category = await _dbContext.Categories
+                .FirstOrDefaultAsync(x => x.Id == id);
+
             if (category == null)
             {
                 return null;
@@ -47,13 +51,32 @@ namespace OneStore.Repository
 
             category.Name = categoryUpdateDTO.Name;
 
+            if (category.ParentCategoryId != categoryUpdateDTO.ParentCategoryId)
+            {
+                if (categoryUpdateDTO.ParentCategoryId.HasValue)
+                {
+                    Category newParent = await _dbContext.Categories.FindAsync(categoryUpdateDTO.ParentCategoryId);
+                    if (newParent == null)
+                    {
+                        return null;
+                    }
+                    category.ParentCategory = newParent;
+                }
+                else
+                {
+                    category.ParentCategory = null;
+                }
+                category.ParentCategoryId = categoryUpdateDTO.ParentCategoryId;
+            }
+
             await _dbContext.SaveChangesAsync();
             return category;
         }
 
         public async Task<Category?> DeleteAsync(int id)
         {
-            Category category = _dbContext.Categories.FirstOrDefault(x => x.Id == id);
+            var category = await _dbContext.Categories.FirstOrDefaultAsync(x => x.Id == id);
+
             if (category == null)
             {
                 return null;

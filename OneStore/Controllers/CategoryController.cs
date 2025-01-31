@@ -25,8 +25,8 @@ namespace OneStore.Controllers
         public async Task<IActionResult> GetAll()
         {
             List<Category> categories = await _categoryInterface.GetAllAsync();
-            IEnumerable<CategoryDTO> catigoriesDTO = categories.Select(x => x.ToDTO());
-            return Ok(catigoriesDTO);
+            IEnumerable<CategoryDTO> response = categories.Select(x => x.ToDTO()).Where(x => !x.ParentCategoryId.HasValue);
+            return Ok(response);
         }
 
         [HttpGet]
@@ -34,19 +34,25 @@ namespace OneStore.Controllers
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
             Category category = await _categoryInterface.GetByIdAsync(id);
+            CategoryDTO response = category.ToDTO();
             if (category == null)
             {
                 return NotFound();
             }
-            return Ok(category.ToDTO());
+            return Ok(response);
         }
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CategoryUpdateDTO categoryCreateDTO)
         {
-            Category category = categoryCreateDTO.FromUpdateDTO();
+            Category category = categoryCreateDTO.ToCategory();
             await _categoryInterface.CreateAsync(category);
-            return Ok(category.ToDTO());
+            if(category == null)
+            {
+                return NotFound();
+            }
+            CategoryDTO response = category.ToDTO();
+            return Ok(response);
         }
 
         [HttpPut]
@@ -54,11 +60,12 @@ namespace OneStore.Controllers
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] CategoryUpdateDTO categoryUpdateDTO)
         {
             Category category = await _categoryInterface.UpdateAsync(id, categoryUpdateDTO);
-            if (category == null) 
+            if (category == null)
             {
                 return NotFound();
             }
-            return Ok(category.ToDTO());
+            CategoryDTO response = category.ToDTO();
+            return Ok(response);
         }
 
         [HttpDelete]

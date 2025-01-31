@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace OneStore.Models
+namespace OneStore.DTOs.Product
 {
-    public class Product
+    public class ProductDTO
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
@@ -13,7 +13,5 @@ namespace OneStore.Models
         public decimal? DiscountPrice { get; set; }
         public int Stock { get; set; }
         public int CategoryId { get; set; }
-
-        public Category? Category { get; set; }
     }
 }
