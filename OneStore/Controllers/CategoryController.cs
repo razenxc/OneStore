@@ -43,7 +43,7 @@ namespace OneStore.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CategoryUpdateDTO categoryCreateDTO)
+        public async Task<IActionResult> Create([FromBody] CategoryCreateDTO categoryCreateDTO)
         {
             Category category = categoryCreateDTO.ToCategory();
             await _categoryInterface.CreateAsync(category);
@@ -59,7 +59,7 @@ namespace OneStore.Controllers
         [Route("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] CategoryUpdateDTO categoryUpdateDTO)
         {
-            Category category = await _categoryInterface.UpdateAsync(id, categoryUpdateDTO);
+            Category category = await _categoryInterface.UpdateAsync(id, categoryUpdateDTO.ToCategory());
             if (category == null)
             {
                 return NotFound();
