@@ -30,52 +30,64 @@ namespace OneStore.Repository
 
         public async Task<Category?> CreateAsync(Category category)
         {
-            if(category.ParentCategoryId != 0)
+            if (category.ParentCategoryId == 0)
             {
-                category.ParentCategory = await _dbContext.Categories.FirstOrDefaultAsync(x => x.ParentCategoryId == x.Id);
+                category.ParentCategoryId = null;
+                category.ParentCategory = null;
             }
+            else if (category.ParentCategoryId.HasValue)
+            {
+                var parentCategory = await _dbContext.Categories
+                    .FirstOrDefaultAsync(x => x.Id == category.ParentCategoryId);
+
+                if (parentCategory == null)
+                {
+                    throw new Exception("Parent category does not exist.");
+                }
+
+                category.ParentCategory = parentCategory;
+            }
+
             await _dbContext.Categories.AddAsync(category);
             await _dbContext.SaveChangesAsync();
             return category;
         }
 
-        public async Task<Category?> UpdateAsync(int id, CategoryUpdateDTO categoryUpdateDTO)
+        public async Task<Category?> UpdateAsync(int id, Category category)
         {
-            var category = await _dbContext.Categories
+            Category model = await _dbContext.Categories
                 .FirstOrDefaultAsync(x => x.Id == id);
 
-            if (category == null)
+            if (model == null)
             {
                 return null;
             }
 
-            category.Name = categoryUpdateDTO.Name;
-
-            if (category.ParentCategoryId != categoryUpdateDTO.ParentCategoryId)
+            if (model.ParentCategoryId == 0)
             {
-                if (categoryUpdateDTO.ParentCategoryId.HasValue)
+                model.ParentCategoryId = null;
+                model.ParentCategory = null;
+            }
+            else if (model.ParentCategoryId.HasValue)
+            {
+                Category newParent = await _dbContext.Categories.FirstOrDefaultAsync(x => x.ParentCategoryId == model.ParentCategoryId);
+                if (newParent == null)
                 {
-                    Category newParent = await _dbContext.Categories.FindAsync(categoryUpdateDTO.ParentCategoryId);
-                    if (newParent == null)
-                    {
-                        return null;
-                    }
-                    category.ParentCategory = newParent;
+                    return null;
                 }
-                else
-                {
-                    category.ParentCategory = null;
-                }
-                category.ParentCategoryId = categoryUpdateDTO.ParentCategoryId;
+                model.ParentCategory = newParent;
             }
 
+            model.Name = category.Name;
+            model.ParentCategoryId = model.ParentCategoryId;
+
             await _dbContext.SaveChangesAsync();
-            return category;
+            return model;
         }
 
         public async Task<Category?> DeleteAsync(int id)
         {
-            var category = await _dbContext.Categories.FirstOrDefaultAsync(x => x.Id == id);
+            Category category = await _dbContext.Categories.FirstOrDefaultAsync(x => x.Id == id);
 
             if (category == null)
             {
