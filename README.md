@@ -1,72 +1,85 @@
 # OneStore
 
-# API Endpoints: Category Management
+## Project Setup Guide (ASP.NET Web API + MSSQL)
 
-## **Category**
+### Prerequisites
+Before running the project, ensure you have the following installed:
 
-### **Get All Categories**  
-**Method:** `[GET] /api/category`  
-**Response:**  
-```json
-[
-  {
-    "id": int,
-    "name": string
-  }
-]
+- [.NET 8.0 or later](https://dotnet.microsoft.com/download)
+- [SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads)
+- [SQL Server Management Studio (SSMS)](https://learn.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms)
+
+---
+
+### 1. Clone the Repository
+```sh
+git clone https://github.com/razenxc/OneStore
+cd OneStore
 ```
 
 ---
 
-### **Get Category by ID**  
-**Method:** `[GET] /api/category/{id}`  
-**Response:**  
+### 2. Configure the Database Connection
+Open `appsettings.json` and update the connection string:
 ```json
-{
-  "id": int,
-  "name": string
+"ConnectionStrings": {
+  "DefaultConnection": "Data Source=YOUR_SERVER;Initial Catalog=YOUR_DATABASE;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"
 }
+```
+**Replace:**
+- `YOUR_SERVER` → Your SQL Server instance (e.g., `ALEXEY-DESKTOP\SQLEXPRESS`)
+- `YOUR_DATABASE` → Your database name (e.g., `OneStore`)
+
+---
+
+### 3. Apply Migrations
+Run the following commands to apply database migrations:
+```sh
+dotnet ef migrations add InitialCreate
+dotnet ef database update
+```
+
+If Entity Framework Core tools are not installed, install them with:
+```sh
+dotnet tool install --global dotnet-ef
 ```
 
 ---
 
-### **Create Category**  
-**Method:** `[POST] /api/category`  
-**Request Body:**  
-```json
-{
-  "name": string
-}
-```  
-**Response:**  
-```json
-{
-  "id": int,
-  "name": string
-}
+### 4. Run the Project
+Start the application with:
+```sh
+dotnet run
+```
+By default, the API will be available at:
+```
+http://localhost:5043
+https://localhost:7215
 ```
 
 ---
 
-### **Update Category**  
-**Method:** `[PUT] /api/category/{id}`  
-**Request Body:**  
-```json
-{
-  "name": string
-}
-```  
-**Response:**  
-```json
-{
-  "id": int,
-  "name": string
-}
+### 5. Test API Endpoints
+You can test the API using **Postman**, **Swagger**, or **cURL**.
+
+#### Open Swagger UI:
+```
+https://localhost:7215/swagger/index.html
+```
+
+#### Example cURL Request:
+```sh
+curl -X 'GET' \
+  'https://localhost:7215/api/product' \
+  -H 'accept: */*'
 ```
 
 ---
 
-### **Delete Category**  
-**Method:** `[DELETE] /api/category/{id}`  
-**Response:**  
-`204 No Content`
+### 6. Build and Publish
+To publish the project, use:
+```sh
+dotnet publish -c Release -o out
+```
+
+Deploy the `out` folder to your hosting environment.
