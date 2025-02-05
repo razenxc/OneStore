@@ -19,14 +19,24 @@ namespace OneStore.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             List<Product> products = await _product.GetAllAsync();
             return Ok(products.Select(x => x.ToDTO()));
         }
 
         [HttpGet]
-        [Route("{id}")]
+        [Route("{id:int}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             Product model = await _product.GetByIdAsync(id);
             if (model == null)
             {
@@ -38,6 +48,11 @@ namespace OneStore.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] ProductCreateDTO product)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             Product model = await _product.CreateAsync(product.FromDTO());
             if (model == null)
             {
@@ -47,9 +62,14 @@ namespace OneStore.Controllers
         }
 
         [HttpPut]
-        [Route("{id}")]
+        [Route("{id:int}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] ProductUpdateDTO product)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             Product model = await _product.UpdateAsync(id, product.FromDTO());
             if (model == null)
             {
@@ -59,9 +79,14 @@ namespace OneStore.Controllers
         }
 
         [HttpDelete]
-        [Route("{id}")]
+        [Route("{id:int}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             Product model = await _product.DeleteAsync(id);
             if(model == null)
             {

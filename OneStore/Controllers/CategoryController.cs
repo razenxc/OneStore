@@ -24,15 +24,25 @@ namespace OneStore.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             List<Category> categories = await _categoryInterface.GetAllAsync();
             IEnumerable<CategoryDTO> response = categories.Select(x => x.ToDTO()).Where(x => !x.ParentCategoryId.HasValue);
             return Ok(response);
         }
 
         [HttpGet]
-        [Route("{id}")]
+        [Route("{id:int}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             Category category = await _categoryInterface.GetByIdAsync(id);
             CategoryDTO response = category.ToDTO();
             if (category == null)
@@ -45,6 +55,11 @@ namespace OneStore.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CategoryCreateDTO categoryCreateDTO)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             Category category = categoryCreateDTO.ToCategory();
             await _categoryInterface.CreateAsync(category);
             if(category == null)
@@ -56,9 +71,14 @@ namespace OneStore.Controllers
         }
 
         [HttpPut]
-        [Route("{id}")]
+        [Route("{id:int}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] CategoryUpdateDTO categoryUpdateDTO)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             Category category = await _categoryInterface.UpdateAsync(id, categoryUpdateDTO.ToCategory());
             if (category == null)
             {
@@ -69,9 +89,14 @@ namespace OneStore.Controllers
         }
 
         [HttpDelete]
-        [Route("{id}")]
+        [Route("{id:int}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             Category category = await _categoryInterface.DeleteAsync(id);
             if (category == null)
             {
