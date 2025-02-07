@@ -55,7 +55,8 @@ namespace OneStore.Repository
                 }
             }
 
-            return await products.ToListAsync();
+            int skip = (query.Page - 1) * query.PageSize;
+            return await products.Skip(skip).Take(query.Page).ToListAsync();
         }
 
         public async Task<Product?> GetByIdAsync(int id)
