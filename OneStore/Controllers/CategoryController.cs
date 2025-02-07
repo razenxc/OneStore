@@ -3,6 +3,7 @@ using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using OneStore.Data;
 using OneStore.DTOs.Category;
+using OneStore.Helpers;
 using OneStore.Interfaces;
 using OneStore.Mappers;
 using OneStore.Models;
@@ -22,15 +23,15 @@ namespace OneStore.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] QueryObject query)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            List<Category> categories = await _categoryInterface.GetAllAsync();
-            IEnumerable<CategoryDTO> response = categories.Select(x => x.ToDTO()).Where(x => !x.ParentCategoryId.HasValue);
+            List<Category> categories = await _categoryInterface.GetAllAsync(query);
+            IEnumerable<CategoryDTO> response = categories.Select(x => x.ToDTO());
             return Ok(response);
         }
 

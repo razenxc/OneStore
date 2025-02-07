@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OneStore.Data;
+using OneStore.Helpers;
 using OneStore.Interfaces;
 using OneStore.Models;
 
@@ -37,9 +38,24 @@ namespace OneStore.Repository
             return model;
         }
 
-        public async Task<List<Product>> GetAllAsync()
+        public async Task<List<Product>> GetAllAsync(QueryObject query)
         {
-            return await _context.Products.ToListAsync();
+            IQueryable<Product> products = _context.Products.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(query.Name))
+            {
+                products = products.Where(x => x.Name.Contains(query.Name));
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.SortBy))
+            {
+                if (query.SortBy.Equals("Price", StringComparison.OrdinalIgnoreCase))
+                {
+                    products = query.IsDecsending ? products.OrderByDescending(x => x.Price) : products.OrderBy(x => x.Price);
+                }
+            }
+
+            return await products.ToListAsync();
         }
 
         public async Task<Product?> GetByIdAsync(int id)

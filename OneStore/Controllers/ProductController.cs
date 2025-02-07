@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OneStore.DTOs.Product;
+using OneStore.Helpers;
 using OneStore.Interfaces;
 using OneStore.Mappers;
 using OneStore.Models;
@@ -17,14 +18,14 @@ namespace OneStore.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] QueryObject query)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            List<Product> products = await _product.GetAllAsync();
+            List<Product> products = await _product.GetAllAsync(query);
             return Ok(products.Select(x => x.ToDTO()));
         }
 

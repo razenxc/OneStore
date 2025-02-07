@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OneStore.Data;
 using OneStore.DTOs.Category;
+using OneStore.Helpers;
 using OneStore.Interfaces;
 using OneStore.Models;
 
@@ -15,11 +16,24 @@ namespace OneStore.Repository
             _dbContext = dbContext;
         }
 
-        public async Task<List<Category>> GetAllAsync()
+        public async Task<List<Category>> GetAllAsync(QueryObject query)
         {
-            return await _dbContext.Categories
-                .Include(c => c.SubCategories)
-                .ToListAsync();
+            IQueryable<Category> categories = _dbContext.Categories.Include(c => c.SubCategories).Where(x => !x.ParentCategoryId.HasValue);
+
+            if (!string.IsNullOrWhiteSpace(query.Name))
+            {
+                categories = categories.Where(x => x.Name.Contains(query.Name));
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.SortBy))
+            {
+                if(query.SortBy.Equals("Name", StringComparison.OrdinalIgnoreCase))
+                {
+                    categories = query.IsDecsending ? categories.OrderByDescending(x => x.Name) : categories.OrderBy(x => x.Name);
+                }
+            }
+
+            return await categories.ToListAsync();
         }
 
         public async Task<Category?> GetByIdAsync(int id)
