@@ -7,6 +7,7 @@ using OneStore.Data;
 using OneStore.Interfaces;
 using OneStore.Models;
 using OneStore.Repository;
+using OneStore.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -67,6 +68,7 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 var app = builder.Build();
 
