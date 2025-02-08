@@ -37,14 +37,14 @@ namespace OneStore.Controllers
 
         [HttpGet]
         [Route("{id:int}")]
-        public async Task<IActionResult> GetById([FromRoute] int id)
+        public async Task<IActionResult> GetById([FromRoute] int id, [FromQuery] QueryObject query)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            Category category = await _categoryInterface.GetByIdAsync(id);
+            Category category = await _categoryInterface.GetByIdAsync(id, query);
             CategoryDTO response = category.ToDTO();
             if (category == null)
             {

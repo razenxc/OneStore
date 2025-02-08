@@ -36,10 +36,21 @@ namespace OneStore.Repository
             return await categories.ToListAsync();
         }
 
-        public async Task<Category?> GetByIdAsync(int id)
+        public async Task<Category?> GetByIdAsync(int id, QueryObject query)
         {
-            return await _dbContext.Categories
-                .FirstOrDefaultAsync(x => x.Id == id);
+            Category? category = await _dbContext.Categories
+                .Include(c => c.Products)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (category != null)
+            {
+                category.Products = category.Products
+                    .Skip((query.Page - 1) * query.PageSize)
+                    .Take(query.PageSize)
+                    .ToList();
+            }
+
+            return category;
         }
 
         public async Task<Category?> CreateAsync(Category category)

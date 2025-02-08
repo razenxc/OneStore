@@ -17,6 +17,7 @@ namespace OneStore.Mappers
                 Name = category.Name,
                 ParentCategoryId = category.ParentCategoryId,
                 SubCategories = category.SubCategories.Select(x => x.ToDTO()).ToList(),
+                Products = category.Products.Select(y => y.ToDTO()).ToList(),
             };
         }
 

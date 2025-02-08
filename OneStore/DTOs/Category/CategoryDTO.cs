@@ -1,6 +1,7 @@
 ﻿
 
 using System.ComponentModel.DataAnnotations;
+using OneStore.DTOs.Product;
 using OneStore.Models;
 
 namespace OneStore.DTOs.Category
@@ -16,5 +17,6 @@ namespace OneStore.DTOs.Category
         [Required]
         public int? ParentCategoryId { get; set; }
         public List<CategoryDTO> SubCategories { get; set; } = new List<CategoryDTO>();
+        public List<ProductDTO> Products { get; set; } = new List<ProductDTO>();
     }
 }
