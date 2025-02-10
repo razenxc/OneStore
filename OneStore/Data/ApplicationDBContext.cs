@@ -20,7 +20,7 @@ namespace OneStore.Data
             {
                 new IdentityRole
                 {
-                    Name = "Adimn",
+                    Name = "Admin",
                     NormalizedName = "ADMIN"
                 },
                 new IdentityRole

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using OneStore.DTOs.Product;
 using OneStore.Helpers;
 using OneStore.Interfaces;
@@ -47,6 +48,7 @@ namespace OneStore.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([FromBody] ProductCreateDTO product)
         {
             if (!ModelState.IsValid)
@@ -64,6 +66,7 @@ namespace OneStore.Controllers
 
         [HttpPut]
         [Route("{id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] ProductUpdateDTO product)
         {
             if (!ModelState.IsValid)
@@ -81,6 +84,7 @@ namespace OneStore.Controllers
 
         [HttpDelete]
         [Route("{id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             if (!ModelState.IsValid)

@@ -163,8 +163,8 @@ namespace OneStore.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "42a37329-833d-4f83-bc50-eeb3d5348e0a", null, "User", "User" },
-                    { "5607fe8d-e73c-4d0b-ba0d-f6f2d88b77b3", null, "Adimn", "ADMIN" }
+                    { "aedd4aaf-e382-4d8a-8084-10461e4524e7", null, "User", "User" },
+                    { "ff4060bd-4a05-47c6-9e5c-04ebd500352a", null, "Admin", "ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(

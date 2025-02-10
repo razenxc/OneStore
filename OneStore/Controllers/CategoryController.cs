@@ -1,5 +1,6 @@
 ﻿using System.Formats.Asn1;
 using System.Net;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OneStore.Data;
 using OneStore.DTOs.Category;
@@ -14,11 +15,9 @@ namespace OneStore.Controllers
     [ApiController]
     public class CategoryController : ControllerBase
     {
-        private readonly ApplicationDBContext _dbContext;
         private readonly ICategoryRepository _categoryInterface;
-        public CategoryController(ApplicationDBContext dBContext, ICategoryRepository categoryInterface)
+        public CategoryController(ICategoryRepository categoryInterface)
         {
-            _dbContext = dBContext;
             _categoryInterface = categoryInterface;
         }
 
@@ -54,6 +53,7 @@ namespace OneStore.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([FromBody] CategoryCreateDTO categoryCreateDTO)
         {
             if (!ModelState.IsValid)
@@ -73,6 +73,7 @@ namespace OneStore.Controllers
 
         [HttpPut]
         [Route("{id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] CategoryUpdateDTO categoryUpdateDTO)
         {
             if (!ModelState.IsValid)
@@ -91,6 +92,7 @@ namespace OneStore.Controllers
 
         [HttpDelete]
         [Route("{id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             if (!ModelState.IsValid)
