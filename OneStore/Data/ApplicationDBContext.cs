@@ -1,36 +1,43 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using OneStore.Models;
+using OneStore.Model;
 
 namespace OneStore.Data
 {
-    public class ApplicationDBContext : IdentityDbContext<User>
+    public class ApplicationDbContext : DbContext
     {
-        public ApplicationDBContext(DbContextOptions dbContextOptions) : base(dbContextOptions) { }
+        private readonly IConfiguration _config;
+        public ApplicationDbContext(DbContextOptions o, IConfiguration config) : base(o) 
+        {
+            _config = config;
+        }
 
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<User> Users { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder builder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(builder);
+            base.OnModelCreating(modelBuilder);
 
-            List<IdentityRole> roles = new List<IdentityRole>
+            // =============
+            // Admin Account
+            User adminAccount = new User
             {
-                new IdentityRole
-                {
-                    Name = "Admin",
-                    NormalizedName = "ADMIN"
-                },
-                new IdentityRole
-                {
-                    Name = "User",
-                    NormalizedName = "User"
-                }
+                Id = 1,
+                Username = _config["ApiSettings:AdminUsername"],
+                Role = "ADMIN"
             };
 
-            builder.Entity<IdentityRole>().HasData(roles);
+            adminAccount.PasswordHash = new PasswordHasher<User>().HashPassword(adminAccount, _config["ApiSettings:AdminPassword"]);
+
+            modelBuilder.Entity<User>()
+                .HasData(adminAccount);
+
+            modelBuilder.Entity<Product>()
+                .HasOne(x => x.Category)
+                .WithMany(x => x.Products)
+                .HasForeignKey(x => x.CategoryId);
         }
     }
 }

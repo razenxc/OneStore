@@ -1,101 +1,41 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using OneStore.DTOs.Account;
-using OneStore.Interfaces;
-using OneStore.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using OneStore.Model;
+using OneStore.Services;
 
 namespace OneStore.Controllers
 {
-    [Microsoft.AspNetCore.Components.Route("api/account")]
     [ApiController]
+    [Route("api/account")]
     public class AccountController : ControllerBase
     {
-        private readonly UserManager<User> _userManager;
-        private readonly ITokenService _tokenService;
-        private readonly SignInManager<User> _signInManager;
-        public AccountController(UserManager<User> userManager, ITokenService tokenService, SignInManager<User> signInManager)
+        private readonly IAccountService _accountService;
+        public AccountController(IAccountService accountService)
         {
-            _userManager = userManager;
-            _tokenService = tokenService;
-            _signInManager = signInManager;
+            _accountService = accountService;
         }
 
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterDTO registerDTO)
+        [HttpPost]
+        [Route("register")]
+        public async Task<IActionResult> Register([FromBody] UserAuth user)
         {
-            try
+            User model = await _accountService.RegisterAsync(user);
+            if (model == null)
             {
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
-
-                User user = new User
-                {
-                    UserName = registerDTO.Username,
-                    Email = registerDTO.Email,
-                };
-
-                IdentityResult createdUser = await _userManager.CreateAsync(user, registerDTO.Password);
-
-                if (!createdUser.Succeeded)
-                {
-                    return BadRequest(createdUser.Errors);
-                }
-
-                IdentityResult roleResult = await _userManager.AddToRoleAsync(user, "User");
-
-                if (roleResult.Succeeded)
-                {
-                    return Ok(new NewUserDTO
-                    {
-                        UserName = user.UserName,
-                        Email = user.Email,
-                        Token = await _tokenService.CreateToken(user)
-                    });
-                }
-                else
-                {
-                    return BadRequest(roleResult.Errors);
-                }
-
+                return BadRequest();
             }
-            catch (Exception ex)
-            {
-                return BadRequest(ex);
-            }
+            return Ok(model);
         }
 
-        [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginDTO loginDTO)
+        [HttpPost]
+        [Route("login")]
+        public async Task<IActionResult> Login([FromBody] UserAuth user)
         {
-            if(!ModelState.IsValid)
+            string token = await _accountService.LoginAsync(user);
+            if (token == null)
             {
-                return BadRequest(ModelState);
+                return BadRequest("Wrong username/password");
             }
-
-            User user = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == loginDTO.Username);
-
-            if (user == null)
-            {
-                return Unauthorized("Invalid username!");
-            }
-
-            Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.CheckPasswordSignInAsync(user, loginDTO.Password, false);
-
-            if (!result.Succeeded)
-            {
-                return Unauthorized("Username/password is wrong");
-            }
-
-            return Ok(new NewUserDTO
-            {
-                UserName = user.UserName,
-                Email = user.Email,
-                Token = await _tokenService.CreateToken(user)
-            });
+            return Ok(token);
         }
     }
 }
