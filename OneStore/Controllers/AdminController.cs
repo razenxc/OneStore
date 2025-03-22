@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OneStore.Data;
 using OneStore.Model;
+using OneStore.Services;
 
 namespace OneStore.Controllers
 {
@@ -15,21 +16,29 @@ namespace OneStore.Controllers
     [Authorize(Roles = "ADMIN")]
     public class AdminController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-        public AdminController(ApplicationDbContext context)
+        private readonly IAdminService _adminService;
+        public AdminController(IAdminService adminService)
         {
-            _context = context;
+            _adminService = adminService;
         }
 
         [HttpGet]
         [Route("getAllUsers")]
         public async Task<IActionResult> GetAllUsers()
         {
-            var users = await _context.Users
-                .Select(u => new { u.Id, u.Username })
-                .ToListAsync();
+            return Ok(await _adminService.GetAllUsersAsync());
+        }
 
-            return Ok(users);
+        [HttpPost]
+        [Route("changeUserRole")]
+        public async Task<IActionResult> ChangeUserRole([FromBody] UserDto user)
+        {
+            UserDto model = await _adminService.ChangeUserRoleAsync(user);
+            if (model == null)
+            {
+                return BadRequest("User doesn't exsist");
+            }
+            return Ok(model);
         }
     }
 }

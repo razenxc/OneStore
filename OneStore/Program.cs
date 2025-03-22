@@ -75,6 +75,7 @@ builder.Services.AddSwaggerGen(option =>
 
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<IAdminService, AdminService>();
 
 
 var app = builder.Build();

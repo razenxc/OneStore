@@ -18,7 +18,7 @@ namespace OneStore.Controllers
         [Route("register")]
         public async Task<IActionResult> Register([FromBody] UserAuth user)
         {
-            User model = await _accountService.RegisterAsync(user);
+            UserDto model = await _accountService.RegisterAsync(user);
             if (model == null)
             {
                 return BadRequest();

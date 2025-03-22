@@ -32,13 +32,14 @@ namespace OneStore.Services
             return token;
         }
 
-        public async Task<User> RegisterAsync(UserAuth user)
+        public async Task<UserDto> RegisterAsync(UserAuth user)
         {
-            User model = await _context.Users.FirstOrDefaultAsync(x => x.Username == user.Username);
-            if (model == null)
+            if (await _context.Users.FirstOrDefaultAsync(x => x.Username == user.Username) != null)
             {
                 return null;
             }
+
+            User model = new();
 
             model.Username = user.Username;
             model.PasswordHash = new PasswordHasher<User>().HashPassword(model, user.Password);
@@ -47,7 +48,12 @@ namespace OneStore.Services
             await _context.Users.AddAsync(model);
             await _context.SaveChangesAsync();
 
-            return model;
+            return new UserDto
+            {
+                Id = model.Id,
+                Username = model.Username,
+                Role = model.Role
+            };
         }
     }
 }
