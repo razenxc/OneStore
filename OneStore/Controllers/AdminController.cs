@@ -7,10 +7,6 @@ using OneStore.Services;
 
 namespace OneStore.Controllers
 {
-    // ===================================
-    // PLACEHOLDER CONTROLLER FOR TESTS
-    // ===================================
-
     [ApiController]
     [Route("api/adminn")]
     [Authorize(Roles = "ADMIN")]
