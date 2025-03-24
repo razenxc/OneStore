@@ -8,7 +8,7 @@ using OneStore.Services;
 namespace OneStore.Controllers
 {
     [ApiController]
-    [Route("api/adminn")]
+    [Route("api/admin")]
     [Authorize(Roles = "ADMIN")]
     public class AdminController : ControllerBase
     {

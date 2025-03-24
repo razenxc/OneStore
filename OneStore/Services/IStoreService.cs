@@ -7,17 +7,17 @@ namespace OneStore.Services
         // ===========
         // Categories
         Task<List<Category>> GetCategoriesAsync();
-        Task<Category> CreateCategoryAsync(CategoryDto category);
+        Task<Category> CreateCategoryAsync(Category category);
         Task<Category> GetCategoryByIdAsync(int id);
-        Task<Category> UpdateCategoryAsync(int id, CategoryDto category);
+        Task<Category> UpdateCategoryAsync(int id, Category category);
         Task<bool> DeleteCategoryAsync(int id);
 
         // ===========
         // Products
         Task<List<Product>> GetProductsAsync();
-        Task<Product> CreateProductAsync(ProductDto product);
+        Task<Product> CreateProductAsync(Product product);
         Task<Product> GetProductByIdAsync(int id);
-        Task<Product> UpdateProductAsync(int id, ProductDto product);
+        Task<Product> UpdateProductAsync(int id, Product product);
         Task<bool> DeleteProductAsync(int id);
 
     }

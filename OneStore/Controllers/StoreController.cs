@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using OneStore.Mappers;
 using OneStore.Model;
 using OneStore.Services;
 
@@ -8,11 +10,6 @@ namespace OneStore.Controllers
     [Route("api/store")]
     public class StoreController : ControllerBase
     {
-        // ==========================================================================
-        // Issues: Object cycling (possible solution: Create a DTO without List<>)
-        //              - Targets: CreateProduct
-        // ==========================================================================
-
         private readonly IStoreService _storeService;
 
         public StoreController(IStoreService storeService)
@@ -30,10 +27,11 @@ namespace OneStore.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "ADMIN")]
         [Route("createCategory")]
         public async Task<IActionResult> CreateCategory([FromBody] CategoryDto category)
         {
-            Category model = await _storeService.CreateCategoryAsync(category);
+            Category model = await _storeService.CreateCategoryAsync(category.FromDto());
             if (model == null)
             {
                 return BadRequest();
@@ -50,23 +48,25 @@ namespace OneStore.Controllers
             { 
                 return BadRequest();
             }
-            return Ok(model);
+            return Ok(model.ToDto());
         }
 
         [HttpPost]
         [Route("updateCategory/{id}")]
+        [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> UpdateCategory([FromRoute] int id, [FromBody] CategoryDto category)
         {
-            Category model = await _storeService.UpdateCategoryAsync(id, category);
+            Category model = await _storeService.UpdateCategoryAsync(id, category.FromDto());
             if (model == null)
             {
                 return BadRequest();
             }
-            return Ok(model);
+            return Ok(model.ToDto());
         }
 
         [HttpPost]
         [Route("deleteCategory/{id}")]
+        [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> DeleteCategory([FromRoute] int id)
         {
             bool deleted = await _storeService.DeleteCategoryAsync(id);
@@ -88,14 +88,15 @@ namespace OneStore.Controllers
 
         [HttpPost]
         [Route("createProduct")]
+        [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> CreateProduct([FromBody] ProductDto product)
         {
-            Product model = await _storeService.CreateProductAsync(product);
+            Product model = await _storeService.CreateProductAsync(product.FromDto());
             if (model == null)
             {
                 return BadRequest();
             }
-            return Ok(model);
+            return Ok(model.ToDto());
         }
 
         [HttpGet]
@@ -107,23 +108,25 @@ namespace OneStore.Controllers
             {
                 return BadRequest();
             }
-            return Ok(model);
+            return Ok(model.ToDto());
         }
 
         [HttpPost]
         [Route("updateProduct/{id}")]
+        [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> UpdateProduct([FromRoute] int id, [FromBody] ProductDto product)
         {
-            Product model = await _storeService.UpdateProductAsync(id, product);
+            Product model = await _storeService.UpdateProductAsync(id, product.FromDto());
             if (model == null)
             {
                 return BadRequest();
             }
-            return Ok(model);
+            return Ok(model.ToDto());
         }
 
         [HttpPost]
         [Route("deleteProduct/{id}")]
+        [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> DeleteProduct([FromRoute] int id)
         {
             bool deleted = await _storeService.DeleteProductAsync(id);

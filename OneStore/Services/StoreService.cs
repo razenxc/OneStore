@@ -21,14 +21,12 @@ namespace OneStore.Services
             return categories;
         }
 
-        public async Task<Category> CreateCategoryAsync(CategoryDto category)
+        public async Task<Category> CreateCategoryAsync(Category category)
         {
-            Category model = new Category { Name = category.Name };
-
-            await _context.Categories.AddAsync(model);
+            await _context.Categories.AddAsync(category);
             await _context.SaveChangesAsync();
 
-            return model;
+            return category;
         }
 
         public async Task<Category> GetCategoryByIdAsync(int id)
@@ -41,7 +39,7 @@ namespace OneStore.Services
             return category;
         }
 
-        public async Task<Category> UpdateCategoryAsync(int id, CategoryDto category)
+        public async Task<Category> UpdateCategoryAsync(int id, Category category)
         {
             Category model = await _context.Categories.FirstOrDefaultAsync(x => x.Id == id);
             if (model == null)
@@ -78,7 +76,7 @@ namespace OneStore.Services
             return products;
         }
 
-        public async Task<Product> CreateProductAsync(ProductDto product)
+        public async Task<Product> CreateProductAsync(Product product)
         {
             Category category = await _context.Categories.FirstOrDefaultAsync(x => x.Id == product.CategoryId);
             if (category == null)
@@ -86,11 +84,9 @@ namespace OneStore.Services
                 return null;
             }
 
-            Product model = new Product { Name = product.Name, Description = product.Description, CategoryId = product.CategoryId, Category = category };
-
-            await _context.Products.AddAsync(model);
+            await _context.Products.AddAsync(product);
             await _context.SaveChangesAsync();
-            return model;
+            return product;
         }
 
         public async Task<Product> GetProductByIdAsync(int id)
@@ -103,7 +99,7 @@ namespace OneStore.Services
             return product;
         }
 
-        public async Task<Product> UpdateProductAsync(int id, ProductDto product)
+        public async Task<Product> UpdateProductAsync(int id, Product product)
         {
             Product model = await _context.Products.FirstOrDefaultAsync(x => x.Id == id);
             if (model == null)
