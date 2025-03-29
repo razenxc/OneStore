@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using OneStore.Model;
+using OneStore.DTOs.User;
 using OneStore.Services;
 
 namespace OneStore.Controllers

@@ -1,5 +1,4 @@
-﻿
-namespace OneStore.Model
+﻿namespace OneStore.DTOs.User
 {
     public class UserAuth
     {

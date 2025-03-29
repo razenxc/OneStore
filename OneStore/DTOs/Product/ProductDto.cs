@@ -1,4 +1,4 @@
-﻿namespace OneStore.Model
+﻿namespace OneStore.DTOs.Product
 {
     public class ProductDto
     {

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OneStore.Data;
-using OneStore.Model;
+using OneStore.DTOs.User;
 using OneStore.Services;
 
 namespace OneStore.Controllers

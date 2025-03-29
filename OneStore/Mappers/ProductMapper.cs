@@ -1,4 +1,5 @@
-﻿using OneStore.Model;
+﻿using OneStore.DTOs.Product;
+using OneStore.Model;
 
 namespace OneStore.Mappers
 {

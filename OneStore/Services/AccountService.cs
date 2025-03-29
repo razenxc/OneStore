@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OneStore.Data;
+using OneStore.DTOs.User;
 using OneStore.Model;
 
 namespace OneStore.Services

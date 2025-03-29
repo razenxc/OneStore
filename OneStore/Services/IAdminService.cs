@@ -1,4 +1,4 @@
-﻿using OneStore.Model;
+﻿using OneStore.DTOs.User;
 
 namespace OneStore.Services
 {

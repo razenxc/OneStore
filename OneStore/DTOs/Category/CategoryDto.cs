@@ -1,4 +1,4 @@
-﻿namespace OneStore.Model
+﻿namespace OneStore.DTOs.Category
 {
     public class CategoryDto
     {
