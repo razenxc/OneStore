@@ -6,38 +6,68 @@ namespace OneStore.Mappers
 {
     public static class CategoryMapper
     {
-        public static CategoryDto ToDto(this Category category)
+        // ============
+        // Request DTO
+        public static CategoryRequestDTO ToRequestDTO(this Category category)
         {
-            return new CategoryDto
+            return new CategoryRequestDTO
             {
-                Name = category.Name
+                Name = category.Name,
+                ParentCategoryId = category.ParentCategoryId
             };
         }
 
-        public static Category FromDto(this CategoryDto category)
+        public static Category FromRequestDTO(this CategoryRequestDTO category)
         {
             return new Category
             {
-                Name = category.Name
+                Name = category.Name,
+                ParentCategoryId = category.ParentCategoryId
             };
         }
 
-        public static CategoryIdDto ToIdDto(this Category category)
+        // ====
+        // DTO
+
+        public static CategoryDTO ToDTO(this Category category)
         {
-            return new CategoryIdDto
+            return new CategoryDTO
             {
                 Id = category.Id,
-                Name = category.Name
+                Name = category.Name,
+                ParentCategoryId = category.ParentCategoryId,
+                SubCategories = category.SubCategories.Select(x => x.ToDTO()).ToList()
             };
         }
 
-        public static Category FromDto(this CategoryIdDto category)
+        public static Category FromDTO(this CategoryDTO category)
         {
             return new Category
             {
-
                 Id = category.Id,
-                Name = category.Name
+                Name = category.Name,
+                SubCategories = category.SubCategories.Select(x => x.FromDTO()).ToList(),
+                ParentCategoryId = category.ParentCategoryId,
+            };
+        }
+
+        // ===========
+        // Update DTO
+        public static CategoryUpdateDTO ToUpdateDTO(this Category category)
+        {
+            return new CategoryUpdateDTO
+            {
+                Name = category.Name,
+                ParentCategoryId = category.ParentCategoryId
+            };
+        }
+
+        public static Category FromUpdateDTO(this CategoryUpdateDTO category)
+        {
+            return new Category
+            {
+                Name = category.Name,
+                ParentCategoryId = category.ParentCategoryId,
             };
         }
     }

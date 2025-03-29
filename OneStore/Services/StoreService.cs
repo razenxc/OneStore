@@ -18,7 +18,7 @@ namespace OneStore.Services
         public async Task<List<Category>> GetCategoriesAsync()
         {
             List<Category> categories = await _context.Categories.ToListAsync();
-            return categories;
+            return categories.Where(x => x.ParentCategoryId == null).ToList();
         }
 
         public async Task<Category> CreateCategoryAsync(Category category)
@@ -48,6 +48,7 @@ namespace OneStore.Services
             }
 
             model.Name = category.Name;
+            model.ParentCategoryId = category.ParentCategoryId;
 
             await _context.SaveChangesAsync();
 

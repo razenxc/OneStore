@@ -23,20 +23,20 @@ namespace OneStore.Controllers
         public async Task<IActionResult> GetAll()
         {
             List<Category> categories = await _storeService.GetCategoriesAsync();
-            return Ok(categories.Select(x => x.ToIdDto()).ToList());
+            return Ok(categories.Select(x => x.ToDTO()).ToList());
         }
 
         [HttpPost]
         [Authorize(Roles = "ADMIN")]
         [Route("create")]
-        public async Task<IActionResult> Create([FromBody] CategoryDto category)
+        public async Task<IActionResult> Create([FromBody] CategoryRequestDTO category)
         {
-            Category model = await _storeService.CreateCategoryAsync(category.FromDto());
+            Category model = await _storeService.CreateCategoryAsync(category.FromRequestDTO());
             if (model == null)
             {
                 return BadRequest();
             }
-            return Ok(model.ToIdDto());
+            return Ok(model.ToDTO());
         }
 
         [HttpGet]
@@ -48,20 +48,20 @@ namespace OneStore.Controllers
             {
                 return BadRequest();
             }
-            return Ok(model.ToIdDto());
+            return Ok(model.ToDTO());
         }
 
         [HttpPost]
         [Route("update/{id}")]
         [Authorize(Roles = "ADMIN")]
-        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] CategoryDto category)
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] CategoryUpdateDTO category)
         {
-            Category model = await _storeService.UpdateCategoryAsync(id, category.FromDto());
+            Category model = await _storeService.UpdateCategoryAsync(id, category.FromUpdateDTO());
             if (model == null)
             {
                 return BadRequest();
             }
-            return Ok(model.ToIdDto());
+            return Ok(model.ToDTO());
         }
 
         [HttpPost]

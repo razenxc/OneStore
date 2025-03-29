@@ -7,8 +7,14 @@ using OneStore.Services;
 
 namespace OneStore.Controllers
 {
+    [ApiController]
+    [Route("api/store/product")]
     public class ProductController : ControllerBase
     {
+        // ==================================================================================
+        // To-Do: Query params that will return products in specific category; Pagination;
+        // ===============================================================================
+
         private readonly IStoreService _storeService;
 
         public ProductController(IStoreService storeService)
@@ -20,7 +26,8 @@ namespace OneStore.Controllers
         [Route("getAll")]
         public async Task<IActionResult> Get()
         {
-            return Ok(await _storeService.GetProductsAsync());
+            List<Product> products = await _storeService.GetProductsAsync();
+            return Ok(products.Select(x => x.ToDto()).ToList());
         }
 
         [HttpPost]

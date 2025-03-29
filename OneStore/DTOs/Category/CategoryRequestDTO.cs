@@ -1,8 +1,8 @@
 ﻿namespace OneStore.DTOs.Category
 {
-    public class CategoryIdDto
+    public class CategoryRequestDTO
     {
-        public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
+        public int? ParentCategoryId { get; set; } = new();
     }
 }
