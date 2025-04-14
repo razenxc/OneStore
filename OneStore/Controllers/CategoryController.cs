@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OneStore.Constants;
 using OneStore.DTOs.Category;
 using OneStore.Intefaces;
 using OneStore.Mappers;
@@ -27,7 +28,7 @@ namespace OneStore.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = UserRoles.Admin)]
         [Route("create")]
         public async Task<IActionResult> Create([FromBody] CategoryRequestDTO category)
         {
@@ -53,7 +54,7 @@ namespace OneStore.Controllers
 
         [HttpPost]
         [Route("update/{id}")]
-        [Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] CategoryUpdateDTO category)
         {
             Category model = await _storeService.UpdateCategoryAsync(id, category.FromUpdateDTO());
@@ -66,7 +67,7 @@ namespace OneStore.Controllers
 
         [HttpPost]
         [Route("delete/{id}")]
-        [Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             bool deleted = await _storeService.DeleteCategoryAsync(id);

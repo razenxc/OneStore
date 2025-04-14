@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OneStore.Constants;
 using OneStore.DTOs.Product;
 using OneStore.Intefaces;
 using OneStore.Mappers;
@@ -12,10 +13,6 @@ namespace OneStore.Controllers
     [Route("api/store/product")]
     public class ProductController : ControllerBase
     {
-        // ==================================================================================
-        // To-Do: Query params that will return products in specific category; Pagination;
-        // ===============================================================================
-
         private readonly IStoreService _storeService;
 
         public ProductController(IStoreService storeService)
@@ -33,7 +30,7 @@ namespace OneStore.Controllers
 
         [HttpPost]
         [Route("create")]
-        [Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> Create([FromBody] ProductDto product)
         {
             Product model = await _storeService.CreateProductAsync(product.FromDto());
@@ -58,7 +55,7 @@ namespace OneStore.Controllers
 
         [HttpPost]
         [Route("update/{id}")]
-        [Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] ProductDto product)
         {
             Product model = await _storeService.UpdateProductAsync(id, product.FromDto());
@@ -71,7 +68,7 @@ namespace OneStore.Controllers
 
         [HttpPost]
         [Route("delete/{id}")]
-        [Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             bool deleted = await _storeService.DeleteProductAsync(id);

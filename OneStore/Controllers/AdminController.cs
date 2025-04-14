@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using OneStore.Constants;
 using OneStore.Data;
 using OneStore.DTOs.User;
 using OneStore.Intefaces;
@@ -9,7 +10,7 @@ namespace OneStore.Controllers
 {
     [ApiController]
     [Route("api/admin")]
-    [Authorize(Roles = "ADMIN")]
+    [Authorize(Roles = UserRoles.Admin)]
     public class AdminController : ControllerBase
     {
         private readonly IAdminService _adminService;
