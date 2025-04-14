@@ -25,6 +25,11 @@ namespace OneStore.Services
 
         public async Task<Category> CreateCategoryAsync(Category category)
         {
+            if (category.ParentCategoryId == 0)
+            {
+                category.ParentCategoryId = null;
+            }
+
             await _context.Categories.AddAsync(category);
             await _context.SaveChangesAsync();
 
