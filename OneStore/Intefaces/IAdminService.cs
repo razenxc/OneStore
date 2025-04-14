@@ -1,6 +1,6 @@
 ﻿using OneStore.DTOs.User;
 
-namespace OneStore.Services
+namespace OneStore.Intefaces
 {
     public interface IAdminService
     {

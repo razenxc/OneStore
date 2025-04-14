@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OneStore.DTOs.Product;
+using OneStore.Intefaces;
 using OneStore.Mappers;
 using OneStore.Model;
-using OneStore.Services;
+using OneStore.Model.Queries;
 
 namespace OneStore.Controllers
 {
@@ -24,9 +25,9 @@ namespace OneStore.Controllers
 
         [HttpGet]
         [Route("getAll")]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get([FromQuery] ProductQueryParams queryParams)
         {
-            List<Product> products = await _storeService.GetProductsAsync();
+            List<Product> products = await _storeService.GetProductsAsync(queryParams);
             return Ok(products.Select(x => x.ToDto()).ToList());
         }
 

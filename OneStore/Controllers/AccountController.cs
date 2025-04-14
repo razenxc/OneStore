@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OneStore.DTOs.User;
-using OneStore.Services;
+using OneStore.Intefaces;
 
 namespace OneStore.Controllers
 {

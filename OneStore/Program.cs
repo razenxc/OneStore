@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using OneStore.Data;
+using OneStore.Intefaces;
 using OneStore.Services;
 
 var builder = WebApplication.CreateBuilder(args);

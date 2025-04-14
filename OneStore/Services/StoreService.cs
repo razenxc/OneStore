@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OneStore.Data;
+using OneStore.Intefaces;
 using OneStore.Model;
+using OneStore.Model.Queries;
 
 namespace OneStore.Services
 {
@@ -71,9 +73,11 @@ namespace OneStore.Services
 
         // ===========
         // Products
-        public async Task<List<Product>> GetProductsAsync()
+        public async Task<List<Product>> GetProductsAsync(ProductQueryParams queryParams)
         {
-            List<Product> products = await _context.Products.ToListAsync();
+            List<Product> products = (queryParams.CategoryId == 0) ? await _context.Products.ToListAsync() 
+                : await _context.Products.Where(x => x.CategoryId == queryParams.CategoryId).ToListAsync();
+
             return products;
         }
 

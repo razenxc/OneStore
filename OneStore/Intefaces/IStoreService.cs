@@ -1,6 +1,7 @@
 ﻿using OneStore.Model;
+using OneStore.Model.Queries;
 
-namespace OneStore.Services
+namespace OneStore.Intefaces
 {
     public interface IStoreService
     {
@@ -14,7 +15,7 @@ namespace OneStore.Services
 
         // ===========
         // Products
-        Task<List<Product>> GetProductsAsync();
+        Task<List<Product>> GetProductsAsync(ProductQueryParams queryParams);
         Task<Product> CreateProductAsync(Product product);
         Task<Product> GetProductByIdAsync(int id);
         Task<Product> UpdateProductAsync(int id, Product product);

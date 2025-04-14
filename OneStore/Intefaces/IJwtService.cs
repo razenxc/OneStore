@@ -1,6 +1,6 @@
 ﻿using OneStore.Model;
 
-namespace OneStore.Services
+namespace OneStore.Intefaces
 {
     public interface IJwtService
     {

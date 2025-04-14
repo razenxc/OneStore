@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OneStore.Data;
 using OneStore.DTOs.User;
-using OneStore.Services;
+using OneStore.Intefaces;
 
 namespace OneStore.Controllers
 {

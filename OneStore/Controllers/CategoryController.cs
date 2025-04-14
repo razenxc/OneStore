@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OneStore.DTOs.Category;
+using OneStore.Intefaces;
 using OneStore.Mappers;
 using OneStore.Model;
-using OneStore.Services;
 
 namespace OneStore.Controllers
 {

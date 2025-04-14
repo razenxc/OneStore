@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using OneStore.Intefaces;
 using OneStore.Model;
 
 namespace OneStore.Services
