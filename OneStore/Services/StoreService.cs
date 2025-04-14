@@ -80,8 +80,21 @@ namespace OneStore.Services
         // Products
         public async Task<List<Product>> GetProductsAsync(ProductQueryParams queryParams)
         {
-            List<Product> products = (queryParams.CategoryId == 0) ? await _context.Products.ToListAsync() 
-                : await _context.Products.Where(x => x.CategoryId == queryParams.CategoryId).ToListAsync();
+            List<Product> products;
+
+            if (queryParams.CategoryId > 0)
+            {
+                products = await _context.Products.Where(x => x.CategoryId == queryParams.CategoryId).ToListAsync();
+            }
+            else
+            {
+                products = await _context.Products.ToListAsync();
+            }
+
+            if (queryParams.Page > 0)
+            {
+                products = products.Skip((queryParams.Page - 1) * queryParams.PageSize).Take(queryParams.PageSize).ToList();
+            }
 
             return products;
         }
