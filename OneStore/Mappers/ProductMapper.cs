@@ -24,5 +24,27 @@ namespace OneStore.Mappers
                 Description = product.Description,
             };
         }
+
+        public static ProductGetDto ToGetDto(this Product product)
+        {
+            return new ProductGetDto
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Description = product.Description,
+                CategoryId = product.CategoryId,
+            };
+        }
+
+        public static Product FromDto(this ProductGetDto product)
+        {
+            return new Product
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Description = product.Description,
+                CategoryId = product.CategoryId,
+            };
+        }
     }
 }

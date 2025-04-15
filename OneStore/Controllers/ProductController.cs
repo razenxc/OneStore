@@ -22,10 +22,10 @@ namespace OneStore.Controllers
 
         [HttpGet]
         [Route("getAll")]
-        public async Task<IActionResult> Get([FromQuery] ProductQueryParams queryParams)
+        public async Task<IActionResult> GetAll([FromQuery] ProductQueryParams queryParams)
         {
             List<Product> products = await _storeService.GetProductsAsync(queryParams);
-            return Ok(products.Select(x => x.ToDto()).ToList());
+            return Ok(products.Select(x => x.ToGetDto()).ToList());
         }
 
         [HttpPost]
@@ -33,6 +33,11 @@ namespace OneStore.Controllers
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> Create([FromBody] ProductDto product)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             Product model = await _storeService.CreateProductAsync(product.FromDto());
             if (model == null)
             {
@@ -50,7 +55,7 @@ namespace OneStore.Controllers
             {
                 return BadRequest();
             }
-            return Ok(model.ToDto());
+            return Ok(model.ToGetDto());
         }
 
         [HttpPost]
@@ -58,6 +63,11 @@ namespace OneStore.Controllers
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] ProductDto product)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             Product model = await _storeService.UpdateProductAsync(id, product.FromDto());
             if (model == null)
             {

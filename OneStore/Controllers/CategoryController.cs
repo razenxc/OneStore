@@ -32,6 +32,11 @@ namespace OneStore.Controllers
         [Route("create")]
         public async Task<IActionResult> Create([FromBody] CategoryRequestDTO category)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             Category model = await _storeService.CreateCategoryAsync(category.FromRequestDTO());
             if (model == null)
             {
@@ -57,6 +62,11 @@ namespace OneStore.Controllers
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] CategoryUpdateDTO category)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             Category model = await _storeService.UpdateCategoryAsync(id, category.FromUpdateDTO());
             if (model == null)
             {

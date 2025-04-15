@@ -18,6 +18,11 @@ namespace OneStore.Controllers
         [Route("register")]
         public async Task<IActionResult> Register([FromBody] UserAuth user)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             UserDto model = await _accountService.RegisterAsync(user);
             if (model == null)
             {
@@ -30,6 +35,11 @@ namespace OneStore.Controllers
         [Route("login")]
         public async Task<IActionResult> Login([FromBody] UserAuth user)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             string token = await _accountService.LoginAsync(user);
             if (token == null)
             {
