@@ -6,6 +6,6 @@ namespace OneStore.DTOs.Category
     {
         [Required(ErrorMessage = "Name is required property")]
         public string Name { get; set; } = string.Empty;
-        public int? ParentCategoryId { get; set; } = new();
+        public int? ParentCategoryId { get; set; }
     }
 }
