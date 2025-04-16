@@ -11,9 +11,9 @@ using OneStore.Data;
 
 namespace OneStore.Migrations
 {
-    [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20250129120319_v2")]
-    partial class v2
+    [DbContext(typeof(ApplicationDbContext))]
+    [Migration("20250329120629_SubCategories")]
+    partial class SubCategories
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace OneStore.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("OneStore.Models.Category", b =>
+            modelBuilder.Entity("OneStore.Model.Category", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -47,7 +47,7 @@ namespace OneStore.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("OneStore.Models.Product", b =>
+            modelBuilder.Entity("OneStore.Model.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -62,18 +62,9 @@ namespace OneStore.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal?>("DiscountPrice")
-                        .HasColumnType("decimal(18, 2))");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18, 2))");
-
-                    b.Property<int>("Stock")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -82,18 +73,52 @@ namespace OneStore.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("OneStore.Models.Category", b =>
+            modelBuilder.Entity("OneStore.Model.User", b =>
                 {
-                    b.HasOne("OneStore.Models.Category", "ParentCategory")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            PasswordHash = "AQAAAAIAAYagAAAAEOxrySMJc9MwNTakumcCkbCXQZ0+i/IK2MpS6Oj/cl/eJwRT8FdMEJhotgEEe+YMnQ==",
+                            Role = "ADMIN",
+                            Username = "Admin"
+                        });
+                });
+
+            modelBuilder.Entity("OneStore.Model.Category", b =>
+                {
+                    b.HasOne("OneStore.Model.Category", "ParentCategory")
                         .WithMany("SubCategories")
                         .HasForeignKey("ParentCategoryId");
 
                     b.Navigation("ParentCategory");
                 });
 
-            modelBuilder.Entity("OneStore.Models.Product", b =>
+            modelBuilder.Entity("OneStore.Model.Product", b =>
                 {
-                    b.HasOne("OneStore.Models.Category", "Category")
+                    b.HasOne("OneStore.Model.Category", "Category")
                         .WithMany("Products")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -102,7 +127,7 @@ namespace OneStore.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("OneStore.Models.Category", b =>
+            modelBuilder.Entity("OneStore.Model.Category", b =>
                 {
                     b.Navigation("Products");
 

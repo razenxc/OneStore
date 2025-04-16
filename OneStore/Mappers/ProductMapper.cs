@@ -1,99 +1,49 @@
 ﻿using OneStore.DTOs.Product;
-using OneStore.Models;
+using OneStore.Model;
 
 namespace OneStore.Mappers
 {
     public static class ProductMapper
     {
-        // =========
-        // Product
-        // To
-        public static ProductDTO ToDTO(this Product product)
+        public static ProductRequestDto ToDto(this Product product)
         {
-            return new ProductDTO
+            return new ProductRequestDto
+            {
+                CategoryId = product.CategoryId,
+                Name = product.Name,
+                Description = product.Description,
+            };
+        }
+
+        public static Product FromDto(this ProductRequestDto product)
+        {
+            return new Product
+            {
+                CategoryId = product.CategoryId,
+                Name = product.Name,
+                Description = product.Description,
+            };
+        }
+
+        public static ProductResponseDto ToGetDto(this Product product)
+        {
+            return new ProductResponseDto
             {
                 Id = product.Id,
                 Name = product.Name,
                 Description = product.Description,
-                Price = product.Price,
-                DiscountPrice = product.DiscountPrice,
-                Stock = product.Stock,
                 CategoryId = product.CategoryId,
             };
         }
 
-        // From
-        public static Product ToProduct(this ProductDTO productDTO)
+        public static Product FromDto(this ProductResponseDto product)
         {
             return new Product
             {
-                Id = productDTO.Id,
-                Name = productDTO.Name,
-                Description = productDTO.Description,
-                Price = productDTO.Price,
-                DiscountPrice = productDTO.DiscountPrice,
-                Stock = productDTO.Stock,
-                CategoryId = productDTO.CategoryId,
-            };
-        }
-
-        // =========
-        // Create Product
-        // To
-        public static ProductCreateDTO ToCreateDTO(this ProductDTO productDTO)
-        {
-            return new ProductCreateDTO
-            {
-                Name = productDTO.Name,
-                Description = productDTO.Description,
-                Price = productDTO.Price,
-                DiscountPrice = productDTO.DiscountPrice,
-                Stock = productDTO.Stock,
-                CategoryId = productDTO.CategoryId,
-            };
-        }
-
-        // From
-        public static Product FromDTO(this ProductCreateDTO productCreateDTO)
-        {
-            return new Product
-            {
-                Name = productCreateDTO.Name,
-                Description = productCreateDTO.Description,
-                Price = productCreateDTO.Price,
-                DiscountPrice = productCreateDTO.DiscountPrice,
-                Stock = productCreateDTO.Stock,
-                CategoryId = productCreateDTO.CategoryId,
-            };
-        }
-
-        // =========
-        // Update Product
-        // To
-        public static ProductUpdateDTO ToUpdateDTO(this Product product)
-        {
-            return new ProductUpdateDTO
-            {
+                Id = product.Id,
                 Name = product.Name,
                 Description = product.Description,
-                Price = product.Price,
-                DiscountPrice = product.DiscountPrice,
-                Stock = product.Stock,
                 CategoryId = product.CategoryId,
-            };
-        }
-
-        // From
-        public static Product FromDTO(this ProductUpdateDTO productUpdateDTO)
-        {
-            return new Product
-            {
-                Name = productUpdateDTO.Name,
-                Description = productUpdateDTO.Description,
-                Price = productUpdateDTO.Price,
-                DiscountPrice = productUpdateDTO.DiscountPrice,
-                Stock = productUpdateDTO.Stock,
-                CategoryId = productUpdateDTO.CategoryId,
             };
         }
     }

@@ -1,104 +1,92 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OneStore.Constants;
 using OneStore.DTOs.Product;
-using OneStore.Helpers;
-using OneStore.Interfaces;
+using OneStore.Intefaces;
 using OneStore.Mappers;
-using OneStore.Models;
+using OneStore.Model;
+using OneStore.Model.Queries;
 
 namespace OneStore.Controllers
 {
-    [Route("api/product")]
     [ApiController]
+    [Route("api/store/product")]
     public class ProductController : ControllerBase
     {
-        private readonly IProductRepository _product;
-        public ProductController(IProductRepository productRepository)
+        private readonly IStoreService _storeService;
+
+        public ProductController(IStoreService storeService)
         {
-            _product = productRepository;
+            _storeService = storeService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] QueryObject query)
+        [Route("getAll")]
+        public async Task<IActionResult> GetAll([FromQuery] ProductQueryParams queryParams)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            List<Product> products = await _product.GetAllAsync(query);
-            return Ok(products.Select(x => x.ToDTO()));
-        }
-
-        [HttpGet]
-        [Route("{id:int}")]
-        public async Task<IActionResult> GetById([FromRoute] int id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            Product model = await _product.GetByIdAsync(id);
-            if (model == null)
-            {
-                return NotFound();
-            }
-            return Ok(model.ToDTO());
+            List<Product> products = await _storeService.GetProductsAsync(queryParams);
+            return Ok(products.Select(x => x.ToGetDto()).ToList());
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Create([FromBody] ProductCreateDTO product)
+        [Route("create")]
+        [Authorize(Roles = UserRoles.Admin)]
+        public async Task<IActionResult> Create([FromBody] ProductRequestDto product)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            Product model = await _product.CreateAsync(product.FromDTO());
+            Product model = await _storeService.CreateProductAsync(product.FromDto());
             if (model == null)
             {
                 return BadRequest();
             }
-            return Ok(model.ToDTO());
+            return Ok(model.ToDto());
         }
 
-        [HttpPut]
-        [Route("{id:int}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] ProductUpdateDTO product)
+        [HttpGet]
+        [Route("get/{id}")]
+        public async Task<IActionResult> Get([FromRoute] int id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            Product model = await _product.UpdateAsync(id, product.FromDTO());
+            Product model = await _storeService.GetProductByIdAsync(id);
             if (model == null)
             {
-                return NotFound();
+                return BadRequest();
             }
-            return Ok(model.ToDTO());
+            return Ok(model.ToGetDto());
         }
 
-        [HttpDelete]
-        [Route("{id:int}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Delete([FromRoute] int id)
+        [HttpPost]
+        [Route("update/{id}")]
+        [Authorize(Roles = UserRoles.Admin)]
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] ProductRequestDto product)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            Product model = await _product.DeleteAsync(id);
-            if(model == null)
+            Product model = await _storeService.UpdateProductAsync(id, product.FromDto());
+            if (model == null)
             {
-                return NotFound();
+                return BadRequest();
+            }
+            return Ok(model.ToDto());
+        }
+
+        [HttpPost]
+        [Route("delete/{id}")]
+        [Authorize(Roles = UserRoles.Admin)]
+        public async Task<IActionResult> Delete([FromRoute] int id)
+        {
+            bool deleted = await _storeService.DeleteProductAsync(id);
+            if (!deleted)
+            {
+                return BadRequest();
             }
             return NoContent();
         }
-
     }
 }

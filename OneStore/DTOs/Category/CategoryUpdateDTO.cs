@@ -4,10 +4,8 @@ namespace OneStore.DTOs.Category
 {
     public class CategoryUpdateDTO
     {
-        [Required]
+        [Required(ErrorMessage = "Name is required property")]
         public string Name { get; set; } = string.Empty;
-
-        [Required]
         public int? ParentCategoryId { get; set; }
     }
 }

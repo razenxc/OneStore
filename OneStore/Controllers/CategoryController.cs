@@ -1,109 +1,89 @@
-﻿using System.Formats.Asn1;
-using System.Net;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using OneStore.Data;
+using OneStore.Constants;
 using OneStore.DTOs.Category;
-using OneStore.Helpers;
-using OneStore.Interfaces;
+using OneStore.Intefaces;
 using OneStore.Mappers;
-using OneStore.Models;
+using OneStore.Model;
 
 namespace OneStore.Controllers
 {
-    [Route("api/category")]
     [ApiController]
+    [Route("api/store/category")]
     public class CategoryController : ControllerBase
     {
-        private readonly ICategoryRepository _categoryInterface;
-        public CategoryController(ICategoryRepository categoryInterface)
+        private readonly IStoreService _storeService;
+
+        public CategoryController(IStoreService storeService)
         {
-            _categoryInterface = categoryInterface;
+            _storeService = storeService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] QueryObject query)
+        [Route("getAll")]
+        public async Task<IActionResult> GetAll()
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            List<Category> categories = await _categoryInterface.GetAllAsync(query);
-            IEnumerable<CategoryDTO> response = categories.Select(x => x.ToDTO());
-            return Ok(response);
-        }
-
-        [HttpGet]
-        [Route("{id:int}")]
-        public async Task<IActionResult> GetById([FromRoute] int id, [FromQuery] QueryObject query)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            Category category = await _categoryInterface.GetByIdAsync(id, query);
-            CategoryDTO response = category.ToDTO();
-            if (category == null)
-            {
-                return NotFound();
-            }
-            return Ok(response);
+            List<Category> categories = await _storeService.GetCategoriesAsync();
+            return Ok(categories.Select(x => x.ToDTO()).ToList());
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Create([FromBody] CategoryCreateDTO categoryCreateDTO)
+        [Authorize(Roles = UserRoles.Admin)]
+        [Route("create")]
+        public async Task<IActionResult> Create([FromBody] CategoryRequestDTO category)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            Category category = categoryCreateDTO.ToCategory();
-            await _categoryInterface.CreateAsync(category);
-            if(category == null)
+            Category model = await _storeService.CreateCategoryAsync(category.FromRequestDTO());
+            if (model == null)
             {
-                return NotFound();
+                return BadRequest();
             }
-            CategoryDTO response = category.ToDTO();
-            return Ok(response);
+            return Ok(model.ToDTO());
         }
 
-        [HttpPut]
-        [Route("{id:int}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] CategoryUpdateDTO categoryUpdateDTO)
+        [HttpGet]
+        [Route("get/{id}")]
+        public async Task<IActionResult> Get([FromRoute] int id)
+        {
+            Category model = await _storeService.GetCategoryByIdAsync(id);
+            if (model == null)
+            {
+                return BadRequest();
+            }
+            return Ok(model.ToDTO());
+        }
+
+        [HttpPost]
+        [Route("update/{id}")]
+        [Authorize(Roles = UserRoles.Admin)]
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] CategoryUpdateDTO category)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            Category category = await _categoryInterface.UpdateAsync(id, categoryUpdateDTO.ToCategory());
-            if (category == null)
+            Category model = await _storeService.UpdateCategoryAsync(id, category.FromUpdateDTO());
+            if (model == null)
             {
-                return NotFound();
+                return BadRequest();
             }
-            CategoryDTO response = category.ToDTO();
-            return Ok(response);
+            return Ok(model.ToDTO());
         }
 
-        [HttpDelete]
-        [Route("{id:int}")]
-        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [Route("delete/{id}")]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            if (!ModelState.IsValid)
+            bool deleted = await _storeService.DeleteCategoryAsync(id);
+            if (!deleted)
             {
-                return BadRequest(ModelState);
-            }
-
-            Category category = await _categoryInterface.DeleteAsync(id);
-            if (category == null)
-            {
-                return null;
+                return BadRequest();
             }
             return NoContent();
         }
