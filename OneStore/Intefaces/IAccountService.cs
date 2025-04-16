@@ -4,7 +4,7 @@ namespace OneStore.Intefaces
 {
     public interface IAccountService
     {
-        Task<UserDto> RegisterAsync(UserAuth user);
-        Task<string> LoginAsync(UserAuth user);
+        Task<UserResponseDto> RegisterAsync(UserRequestDto user);
+        Task<string> LoginAsync(UserRequestDto user);
     }
 }

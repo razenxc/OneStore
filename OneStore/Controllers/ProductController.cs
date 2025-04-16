@@ -31,7 +31,7 @@ namespace OneStore.Controllers
         [HttpPost]
         [Route("create")]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> Create([FromBody] ProductDto product)
+        public async Task<IActionResult> Create([FromBody] ProductRequestDto product)
         {
             if (!ModelState.IsValid)
             {
@@ -61,7 +61,7 @@ namespace OneStore.Controllers
         [HttpPost]
         [Route("update/{id}")]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] ProductDto product)
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] ProductRequestDto product)
         {
             if (!ModelState.IsValid)
             {

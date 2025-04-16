@@ -16,14 +16,14 @@ namespace OneStore.Controllers
 
         [HttpPost]
         [Route("register")]
-        public async Task<IActionResult> Register([FromBody] UserAuth user)
+        public async Task<IActionResult> Register([FromBody] UserRequestDto user)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            UserDto model = await _accountService.RegisterAsync(user);
+            UserResponseDto model = await _accountService.RegisterAsync(user);
             if (model == null)
             {
                 return BadRequest();
@@ -33,7 +33,7 @@ namespace OneStore.Controllers
 
         [HttpPost]
         [Route("login")]
-        public async Task<IActionResult> Login([FromBody] UserAuth user)
+        public async Task<IActionResult> Login([FromBody] UserRequestDto user)
         {
             if (!ModelState.IsValid)
             {

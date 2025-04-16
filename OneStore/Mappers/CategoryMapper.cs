@@ -29,9 +29,9 @@ namespace OneStore.Mappers
         // ====
         // DTO
 
-        public static CategoryDTO ToDTO(this Category category)
+        public static CategoryResponseDto ToDTO(this Category category)
         {
-            return new CategoryDTO
+            return new CategoryResponseDto
             {
                 Id = category.Id,
                 Name = category.Name,
@@ -40,7 +40,7 @@ namespace OneStore.Mappers
             };
         }
 
-        public static Category FromDTO(this CategoryDTO category)
+        public static Category FromDTO(this CategoryResponseDto category)
         {
             return new Category
             {

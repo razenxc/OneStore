@@ -28,9 +28,9 @@ namespace OneStore.Controllers
 
         [HttpPost]
         [Route("changeUserRole")]
-        public async Task<IActionResult> ChangeUserRole([FromBody] UserDto user)
+        public async Task<IActionResult> ChangeUserRole([FromBody] UserResponseDto user)
         {
-            UserDto model = await _adminService.ChangeUserRoleAsync(user);
+            UserResponseDto model = await _adminService.ChangeUserRoleAsync(user);
             if (model == null)
             {
                 return BadRequest("User doesn't exsist");

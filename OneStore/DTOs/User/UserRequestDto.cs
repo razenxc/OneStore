@@ -2,7 +2,7 @@
 
 namespace OneStore.DTOs.User
 {
-    public class UserAuth
+    public class UserRequestDto
     {
         [Required(ErrorMessage = "Name is required property")]
         public string Username { get; set; }

@@ -4,7 +4,7 @@ namespace OneStore.Intefaces
 {
     public interface IAdminService
     {
-        Task<List<UserDto>> GetAllUsersAsync();
-        Task<UserDto> ChangeUserRoleAsync(UserDto userId);
+        Task<List<UserResponseDto>> GetAllUsersAsync();
+        Task<UserResponseDto> ChangeUserRoleAsync(UserResponseDto userId);
     }
 }

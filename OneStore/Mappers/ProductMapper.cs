@@ -5,9 +5,9 @@ namespace OneStore.Mappers
 {
     public static class ProductMapper
     {
-        public static ProductDto ToDto(this Product product)
+        public static ProductRequestDto ToDto(this Product product)
         {
-            return new ProductDto
+            return new ProductRequestDto
             {
                 CategoryId = product.CategoryId,
                 Name = product.Name,
@@ -15,7 +15,7 @@ namespace OneStore.Mappers
             };
         }
 
-        public static Product FromDto(this ProductDto product)
+        public static Product FromDto(this ProductRequestDto product)
         {
             return new Product
             {
@@ -25,9 +25,9 @@ namespace OneStore.Mappers
             };
         }
 
-        public static ProductGetDto ToGetDto(this Product product)
+        public static ProductResponseDto ToGetDto(this Product product)
         {
-            return new ProductGetDto
+            return new ProductResponseDto
             {
                 Id = product.Id,
                 Name = product.Name,
@@ -36,7 +36,7 @@ namespace OneStore.Mappers
             };
         }
 
-        public static Product FromDto(this ProductGetDto product)
+        public static Product FromDto(this ProductResponseDto product)
         {
             return new Product
             {

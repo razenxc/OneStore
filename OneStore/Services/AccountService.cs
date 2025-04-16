@@ -17,7 +17,7 @@ namespace OneStore.Services
             _context = context;
         }
 
-        public async Task<string> LoginAsync(UserAuth user)
+        public async Task<string> LoginAsync(UserRequestDto user)
         {
             User model = await _context.Users.FirstOrDefaultAsync(x => x.Username == user.Username);
             if (model == null)
@@ -34,7 +34,7 @@ namespace OneStore.Services
             return token;
         }
 
-        public async Task<UserDto> RegisterAsync(UserAuth user)
+        public async Task<UserResponseDto> RegisterAsync(UserRequestDto user)
         {
             if (await _context.Users.FirstOrDefaultAsync(x => x.Username == user.Username) != null)
             {
@@ -50,7 +50,7 @@ namespace OneStore.Services
             await _context.Users.AddAsync(model);
             await _context.SaveChangesAsync();
 
-            return new UserDto
+            return new UserResponseDto
             {
                 Id = model.Id,
                 Username = model.Username,

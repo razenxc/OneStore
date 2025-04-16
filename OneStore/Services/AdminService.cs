@@ -14,7 +14,7 @@ namespace OneStore.Services
             _context = context;
         }
 
-        public async Task<UserDto> ChangeUserRoleAsync(UserDto user)
+        public async Task<UserResponseDto> ChangeUserRoleAsync(UserResponseDto user)
         {
             User model = await _context.Users.FirstOrDefaultAsync(x => x.Id == user.Id);
             if (model == null)
@@ -28,10 +28,10 @@ namespace OneStore.Services
             return user;
         }
 
-        public async Task<List<UserDto>> GetAllUsersAsync()
+        public async Task<List<UserResponseDto>> GetAllUsersAsync()
         {
-            List<UserDto> users = await _context.Users
-                .Select(u => new UserDto { Id = u.Id, Username = u.Username, Role = u.Role })
+            List<UserResponseDto> users = await _context.Users
+                .Select(u => new UserResponseDto { Id = u.Id, Username = u.Username, Role = u.Role })
                 .ToListAsync();
 
             return users;
