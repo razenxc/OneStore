@@ -7,7 +7,7 @@ namespace OneStore.Intefaces
     {
         // ===========
         // Categories
-        Task<List<Category>> GetCategoriesAsync();
+        Task<List<Category>> GetCategoriesAsync(CategoryQueryParams queryParams);
         Task<Category> CreateCategoryAsync(Category category);
         Task<Category> GetCategoryByIdAsync(int id);
         Task<Category> UpdateCategoryAsync(int id, Category category);

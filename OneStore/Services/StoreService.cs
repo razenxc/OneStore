@@ -17,10 +17,25 @@ namespace OneStore.Services
 
         // ===========
         // Categories
-        public async Task<List<Category>> GetCategoriesAsync()
+        public async Task<List<Category>> GetCategoriesAsync(CategoryQueryParams queryParams)
         {
-            List<Category> categories = await _context.Categories.ToListAsync();
-            return categories.Where(x => x.ParentCategoryId == null).ToList();
+            List<Category> categories;
+
+            if(queryParams.Page > 0)
+            {
+                categories = await _context.Categories
+                    .Where(x => x.ParentCategoryId == null)
+                    .Include(x => x.SubCategories)
+                    .Skip((queryParams.Page - 1) * queryParams.PageSize)
+                    .Take(queryParams.PageSize)
+                    .ToListAsync();
+            }
+            else
+            {
+                categories = await _context.Categories.Where(x => x.ParentCategoryId == null).Include(x => x.SubCategories).ToListAsync();
+            }
+
+            return categories;
         }
 
         public async Task<Category> CreateCategoryAsync(Category category)

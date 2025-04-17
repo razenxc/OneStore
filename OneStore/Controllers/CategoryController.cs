@@ -5,6 +5,7 @@ using OneStore.DTOs.Category;
 using OneStore.Intefaces;
 using OneStore.Mappers;
 using OneStore.Model;
+using OneStore.Model.Queries;
 
 namespace OneStore.Controllers
 {
@@ -21,9 +22,9 @@ namespace OneStore.Controllers
 
         [HttpGet]
         [Route("getAll")]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] CategoryQueryParams queryParams)
         {
-            List<Category> categories = await _storeService.GetCategoriesAsync();
+            List<Category> categories = await _storeService.GetCategoriesAsync(queryParams);
             return Ok(categories.Select(x => x.ToDTO()).ToList());
         }
 
