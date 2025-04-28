@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using OneStore.DTOs;
 using OneStore.DTOs.User;
 using OneStore.Intefaces;
+using OneStore.Model;
 
 namespace OneStore.Controllers
 {
@@ -40,12 +42,29 @@ namespace OneStore.Controllers
                 return BadRequest(ModelState);
             }
 
-            string token = await _accountService.LoginAsync(user);
-            if (token == null)
+            Tokens tokens = await _accountService.LoginAsync(user);
+            if (tokens == null)
             {
                 return BadRequest("Wrong username/password");
             }
-            return Ok(token);
+            return Ok(tokens);
+        }
+
+        [HttpPost]
+        [Route("refreshToken")]
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenDto request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            Tokens tokens = await _accountService.RefreshTokenAsync(request.RefreshToken);
+            if (tokens == null)
+            {
+                return BadRequest();
+            }
+            return Ok(tokens);
         }
     }
 }

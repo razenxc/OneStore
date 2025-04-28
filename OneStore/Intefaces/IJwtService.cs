@@ -6,6 +6,6 @@ namespace OneStore.Intefaces
     {
         string GenerateToken(User user);
         Task<string> GenerateRefreshTokenAsync(int userId);
-        Task<Tokens> RefreshTokenAsync(User user);
+        Task<Tokens> RefreshTokenAsync(string token);
     }
 }

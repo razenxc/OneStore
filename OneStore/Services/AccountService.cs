@@ -17,7 +17,7 @@ namespace OneStore.Services
             _context = context;
         }
 
-        public async Task<string> LoginAsync(UserRequestDto user)
+        public async Task<Tokens> LoginAsync(UserRequestDto user)
         {
             User model = await _context.Users.FirstOrDefaultAsync(x => x.Username == user.Username);
             if (model == null)
@@ -30,8 +30,13 @@ namespace OneStore.Services
             }
 
             string token = _jwtService.GenerateToken(model);
+            string refreshToken = await _jwtService.GenerateRefreshTokenAsync(model.Id);
 
-            return token;
+            return new Tokens
+            {
+                AccessToken = token,
+                RefreshToken = refreshToken,
+            };
         }
 
         public async Task<UserResponseDto> RegisterAsync(UserRequestDto user)
@@ -56,6 +61,17 @@ namespace OneStore.Services
                 Username = model.Username,
                 Role = model.Role
             };
+        }
+
+        public async Task<Tokens> RefreshTokenAsync(string token)
+        {
+            Tokens tokens = await _jwtService.RefreshTokenAsync(token);
+            if (tokens == null)
+            {
+                return null;
+            }
+
+            return tokens;
         }
     }
 }
