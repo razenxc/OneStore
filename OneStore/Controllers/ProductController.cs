@@ -47,7 +47,7 @@ namespace OneStore.Controllers
         }
 
         [HttpGet]
-        [Route("get/{id}")]
+        [Route("get/{id:int}")]
         public async Task<IActionResult> Get([FromRoute] int id)
         {
             Product model = await _storeService.GetProductByIdAsync(id);
@@ -59,7 +59,7 @@ namespace OneStore.Controllers
         }
 
         [HttpPost]
-        [Route("update/{id}")]
+        [Route("update/{id:int}")]
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] ProductRequestDto product)
         {
@@ -77,7 +77,7 @@ namespace OneStore.Controllers
         }
 
         [HttpPost]
-        [Route("delete/{id}")]
+        [Route("delete/{id:int}")]
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
