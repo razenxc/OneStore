@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
+using OneStore.Api.Middlewares;
 using OneStore.Data;
 using OneStore.Intefaces;
 using OneStore.Services;
@@ -81,6 +82,8 @@ builder.Services.AddScoped<IStoreService, StoreService>();
 
 
 var app = builder.Build();
+
+app.UseExceptions();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
