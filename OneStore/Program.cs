@@ -1,11 +1,8 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Newtonsoft.Json;
 using OneStore.Api.Middlewares;
 using OneStore.Data;
 using OneStore.Intefaces;
@@ -29,7 +26,7 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("database"));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("database"));
 });
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -83,7 +80,13 @@ builder.Services.AddScoped<IStoreService, StoreService>();
 
 var app = builder.Build();
 
-app.UseExceptions();
+using (var scope = app.Services.CreateScope())
+{
+    ApplicationDbContext ctx = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    ctx.Database.Migrate();
+}
+
+//app.UseExceptions();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

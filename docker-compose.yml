@@ -1,0 +1,36 @@
+services:
+  onestore:
+    image: ${DOCKER_REGISTRY-}onestore
+    build:
+      context: .
+      dockerfile: OneStore/Dockerfile
+    depends_on:
+      - db
+    environment:
+      - ASPNETCORE_URLS=http://+:80
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__Database=Host=db;Database=onestore;Username=postgres;Password=postgres
+      - Jwt__RefreshTokenLifeTime=${JWT_REFRESH_TOKEN_LIFETIME}
+      - Jwt__AccessTokenLifeTime=${JWT_ACCESS_TOKEN_LIFETIME}
+      - Jwt__Issuer=${JWT_ISSUER}
+      - Jwt__Audience=${JWT_AUDIENCE}
+      - Jwt__SigningKey=${JWT_SIGNINGKEY}
+      - ApiSettings__AdminUsername=${API_ADMIN_USERNAME}
+      - ApiSettings__AdminPassword=${API_ADMIN_PASSWORD}
+    ports:
+      - "1001:80"
+
+  db:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_DB: onestore
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
